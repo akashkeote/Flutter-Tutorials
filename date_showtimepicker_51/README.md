@@ -79,7 +79,33 @@ ElevatedButton(
 ```
 
 ---
+## ⭐ Best Practices / Zaruri Points
 
+- **Null Check:**  
+  - Dialog se value lene ke baad hamesha null check karo (`if (datePicked != null)`), warna app crash ho sakti hai agar user cancel kare.
+- **async/await ka use:**  
+  - `showDatePicker` aur `showTimePicker` async functions hain, inko await karo taaki code tab tak ruk jaye jab tak user select ya cancel na kare.
+  - Button ke `onPressed` me `async` lagana zaruri hai.
+- **context:**  
+  - Hamesha wahi context pass karo jahan se dialog open kar rahe ho.
+- **initialDate, firstDate, lastDate:**  
+  - Inka sahi use karo, taaki user galat date select na kar sake (e.g. booking, DOB, etc.).
+- **initialEntryMode:**  
+  - Interview me puchha ja sakta hai:  
+    - `dial` (Default) — circular clock
+    - `input` — textbox me time type karna
+
+---
+
+## 📝 Tips & Interview Prep
+
+- context kya hai?  
+- initialDate, firstDate, lastDate ka use?  
+- Time picker me Dial aur Input mode kya hai?  
+- Null kaise handle karein?
+- async/await kyon use hota hai?
+
+---
 ## 📝 Tips & Notes
 
 - **context** hamesha wahi hona chahiye jahan se aap dialog open kar rahe ho (widget tree me).
