@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 
 void main() {
   runApp(const MainApp());
@@ -32,12 +34,15 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Current Time ${time}',
+            'Current Time ${time.hour}:${time.minute}:${time.second}',
             style: TextStyle(fontSize: 25),
           ),
           ElevatedButton(
               onPressed: () {
-                setState(() {});
+                setState(() {
+                  //ye line nahi likhi to real time me update nahi hoga app
+                  time = DateTime.now();
+                });
               },
               child: Text("Current Time"))
         ],
