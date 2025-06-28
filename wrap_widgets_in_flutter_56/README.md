@@ -1,156 +1,120 @@
-# 🧱 Creating a Custom Rounded Button Widget in Flutter
+# 🌀 Flutter Wrap Widget – Responsive Layout Without Scroll (Hinglish Guide)
 
-When you want consistent, reusable buttons across your app, but with different icons, text, or actions, you make a custom widget! This keeps your code clean, DRY, and easy to style or maintain.
-
----
-
-## 🚀 Why Make a Custom Button Widget?
-
-- **Reusability**: Use the same button code everywhere, just change the label/icon/action.
-- **Clean Code**: No redundant widget trees or clutter in your screens.
-- **Centralized Styling**: Change button look in one place, update everywhere.
+Flutter ka `Wrap` widget ekdum mast hai jab tumhe apne UI me automatically rows/columns wrap karne hain, jab jagah khatam ho jaye. Matlab Row ya Column jaise nahi hai jo overflow kar ke error de de — Wrap apne aap agle line me shift ho jata hai, horizontal ya vertical jaisa tum set karo.
 
 ---
 
-## 📁 Folder Structure
+## 🧠 Kab Use Kare Wrap?
 
-```plaintext
-lib/
-├── main.dart           // uses the custom button
-└── widgets/
-    └── roundedbtn.dart // defines the custom button widget
-```
-
----
-
-## ✨ Features of This Custom Button
-
-| Feature             | In Code? | Notes                                         |
-|---------------------|:--------:|-----------------------------------------------|
-| Custom text         |   ✅     | `btnName` is required                         |
-| Optional icon       |   ✅     | `Icon? icnName` with ternary operator         |
-| Custom colors       |   ✅     | `clr`, `bgclr` used in button styling         |
-| Reusable text style |   ✅     | `TextStyle` passed from outside               |
-| Callback function   |   ✅     | Null-safe, uses `callback!()` if not null     |
-| Unique shape        |   ✅     | `RoundedRectangleBorder` for custom corners   |
+| Use Case                       | Wrap Kyun Acha Hai?                           |
+|--------------------------------|-----------------------------------------------|
+| ✅ Filter Chips (Search Bar)    | Row overflow karega, Wrap sabko wrap kar lega |
+| ✅ Dynamic UI (Tags, Buttons)   | Screen size ke hisab se auto-adjust ho jayega |
+| ✅ Non-scrollable Layouts       | Jab ListView nahi chahiye, tab Wrap le lo     |
+| ❌ Row + ListView ka jugaad     | Wrap jyada clean hai agar height/width fix ho |
 
 ---
 
-## 🧪 Example Usage in main.dart
+## 📦 Code Example
 
 ```dart
-// With icon
-Roundedbtn(
-  btnName: "Press Me",
-  icnName: Icon(Icons.access_time),
-  textStyle: TextStyle(fontSize: 11),
-),
-
-// Without icon, custom color and callback
-Roundedbtn(
-  btnName: "Press Me",
-  textStyle: TextStyle(fontSize: 11, backgroundColor: Color.fromARGB(0, 1, 1, 24)),
-  clr: Color.fromARGB(255, 255, 1, 158),
-  callback: () => print("Press"),
-),
+Wrap(
+  direction: Axis.horizontal,       // Default: horizontally wrap karta hai
+  spacing: 20.0,                    // Items ke beech horizontal gap
+  runSpacing: 10.0,                 // Lines ke beech vertical gap
+  alignment: WrapAlignment.spaceBetween, // Main axis alignment
+  children: [
+    Container(width: 80, height: 80, color: Colors.red, child: Center(child: Text('1'))),
+    Container(width: 120, height: 80, color: Colors.blue, child: Center(child: Text('2'))),
+    // ... aur bhi containers daal sakte ho
+  ],
+)
 ```
 
 ---
 
-## 🛠️ Full Code for widgets/roundedbtn.dart
+## ✅ Key Parameters
+
+| Property      | Kaam Kya Hai?                                    |
+|---------------|--------------------------------------------------|
+| `direction`   | Axis.horizontal (default) ya Axis.vertical       |
+| `spacing`     | Items ke beech horizontal space                  |
+| `runSpacing`  | Rows/columns ke beech vertical space             |
+| `alignment`   | Main axis pe alignment (Row jaisa)               |
+| `runAlignment`| Cross axis pe alignment (Column jaisa)           |
+
+---
+
+## 🛠️ Landscape Mode Tips
+
+| Problem                        | Solution                                    |
+|---------------------------------|---------------------------------------------|
+| Wrap bottom pe chipak nahi raha | Parent me `height: double.infinity` de do   |
+| Row overflow ho raha            | Row ki jagah Wrap use karo                  |
+| Scroll bhi chahiye?             | Wrap ko `SingleChildScrollView` me daal do  |
 
 ```dart
-import 'package:flutter/material.dart';
-
-class Roundedbtn extends StatelessWidget {
-  final String btnName;
-  final Icon? icnName;
-  final Color? clr;
-  final Color? bgclr;
-  final TextStyle? textStyle;
-  final VoidCallback? callback;
-
-  const Roundedbtn({
-    super.key,
-    required this.btnName,
-    this.icnName,
-    this.clr,
-    this.bgclr,
-    required this.textStyle,
-    this.callback,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        callback!();  // Will only work if callback is provided (non-null)
-      },
-      style: ElevatedButton.styleFrom(
-        foregroundColor: bgclr,
-        shadowColor: clr,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(50),
-            bottomLeft: Radius.circular(50),
-          ),
-        ),
-      ),
-      child: icnName != null
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              icnName!,
-              SizedBox(width: 6),
-              Text(btnName, style: textStyle),
-            ],
-          )
-        : Text(btnName, style: textStyle),
-    );
-  }
-}
+SizedBox(
+  height: double.infinity,
+  child: Wrap(...),
+)
 ```
 
 ---
 
-## ⚠️ Null Safety & Optional Parameters
+## 📱 UI Preview: Yeh Example Kya Dikhata Hai?
 
-| Thing                 | How Used       | Why?                                    |
-|-----------------------|---------------|------------------------------------------|
-| `VoidCallback?`       | Optional      | You don't have to pass a callback always |
-| `callback!()`         | Forced call   | Only works if callback is non-null       |
-| `icnName != null ?`   | Ternary check | Button works with or without icon        |
-
----
-
-## 🎨 Button Styling Notes
-
-- Flutter's `ElevatedButton.styleFrom()` now uses:
-  - `foregroundColor`: text/icon color
-  - `backgroundColor`: button fill color
-  - `shadowColor`: shadow
-  - `shape`: for custom rounded borders
-- `primary:` is deprecated—use the above instead.
+- Colorful boxes wrap hote hue (Containers)
+- Responsive layout: boxes screen ke hisab se wrap hote hain
+- 12+ items bhi overflow nahi karte
+- Portrait aur landscape dono me clean lagta hai
+- `spacing`, `runSpacing`, and `alignment` customize kar sakte ho
 
 ---
 
-## ✅ Summary Table
+## 📌 Summary Table
 
-| Good Practice           | In This Code? |
-|------------------------|:-------------:|
-| Separated widget file  |      ✅       |
-| Null-safe callback     |      ✅       |
-| Ternary for optional   |      ✅       |
-| Custom styling         |      ✅       |
-| Clean main.dart usage  |      ✅       |
+| Widget    | Behavior                           | Scroll Chahiye? |
+|-----------|------------------------------------|-----------------|
+| Row       | Horizontal, overflow ho sakta      | ✅              |
+| Column    | Vertical, overflow ho sakta        | ✅              |
+| Wrap      | Jagah khatam to auto-wrap ho jata  | ❌              |
+| ListView  | Scrollable list                    | ✅              |
 
 ---
 
-## 🧾 Want to Extend?
+## 💡 Real World Use Cases for Wrap
 
-- [ ] Add optional size/dimensions for the button
-- [ ] Support for flat, outline, or icon-only button styles
-- [ ] Make callback truly optional (no forced `!`)
-- [ ] Add loading/progress state
+- Filter chips ya hashtags (search UI me)
+- Form me tag selection
+- Button grids jo auto-wrap ho jaye
+- Responsive rows me dynamic-size items
 
-**Let me know if you want a complete project setup, or examples for any of the above!**
+---
+
+### Example: Search Filters with Wrap
+
+```dart
+Wrap(
+  spacing: 8,
+  runSpacing: 8,
+  children: filters.map((filter) => FilterChip(
+    label: Text(filter),
+    selected: selectedFilters.contains(filter),
+    onSelected: (selected) { /* update logic */ },
+  )).toList(),
+)
+```
+
+---
+
+**Pro Tips:**
+- Jab bhi responsive, dynamic row/column chahiye — Wrap use karo, overflow ki tension nahi!
+- Scrollable Wrap chahiye to `SingleChildScrollView` me Wrap daal do.
+- Landscape me Wrap top/bottom pe chipkana hai to parent ka `height: double.infinity` set karo.
+
+---
+
+**Ab tu Flexbox-style responsive layouts Flutter me bana sakta hai! 🔥**
+
+---
