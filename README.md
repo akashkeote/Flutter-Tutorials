@@ -54,4 +54,3 @@ setx PATH "%JAVA_HOME%\bin;%PATH%"
 ---
 
 Happy Coding!  
-Agar aur bhi notes chahiye ho toh batao.  
